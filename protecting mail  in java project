@@ -1,0 +1,180 @@
+import javax.mail.*;
+import javax.mail.internet.*;
+import javax.crypto.*;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.*;
+import java.io.*;
+import java.security.*;
+import java.security.cert.X509Certificate;
+import java.util.Base64;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.InternetAddress;
+import javax.mail.Authenticator;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Transport;
+
+public class EmailProtection {
+    public static void main(String[] args) {
+        String to = "recipient@example.com"; // Recipient email
+        String subject = "Protected Email with Encryption and Signing"; // Subject
+        String body = "This is a secret message that should be protected and signed."; // Email body
+
+        // Secure password for email authentication (use OAuth in production)
+        String emailPassword = "password123";
+        
+        // Encrypt the message body
+        String encryptionKey = "1234567890123456"; // 16-byte AES key
+        String encryptedBody = EncryptionUtil.encrypt(body, encryptionKey);
+        
+        // Sign the email (simulated with RSA private key)
+        String signedMessage = SignatureUtil.signMessage(encryptedBody);
+
+        // Send the email with encrypted content and signed message
+        sendEmail(to, subject, signedMessage, emailPassword);
+    }
+
+    // Method to send an email with encryption and signing
+    public static void sendEmail(String to, String subject, String body, String emailPassword) {
+        // Email SMTP properties (for Gmail SMTP server)
+        Properties properties = new Properties();
+        properties.put("mail.smtp.host", "smtp.gmail.com");
+        properties.put("mail.smtp.port", "587");
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+
+        // Get a session and authenticate with email account credentials
+        Session session = Session.getInstance(properties, new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("your-email@gmail.com", emailPassword);
+            }
+        });
+
+        try {
+            // Create a new email message
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("your-email@gmail.com"));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+            message.setSubject(subject);
+
+            // Add the encrypted and signed message body
+            MimeBodyPart messageBodyPart = new MimeBodyPart();
+            messageBodyPart.setText("Encrypted and Signed Message: " + body);
+
+            // Create multipart content and add body part
+            Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(messageBodyPart);
+
+            // Set the email content
+            message.setContent(multipart);
+
+            // Send the email
+            Transport.send(message);
+            System.out.println("Email sent successfully with encryption and signing.");
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+// Encryption utility class to handle AES encryption
+class EncryptionUtil {
+
+    // Encrypt data using AES with a given key
+    public static String encrypt(String data, String key) {
+        try {
+            SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(), "AES");
+            Cipher cipher = Cipher.getInstance("AES");
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            byte[] encryptedData = cipher.doFinal(data.getBytes());
+            return Base64.getEncoder().encodeToString(encryptedData); // Encode to Base64
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // Decrypt data using AES with a given key
+    public static String decrypt(String encryptedData, String key) {
+        try {
+            SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(), "AES");
+            Cipher cipher = Cipher.getInstance("AES");
+            cipher.init(Cipher.DECRYPT_MODE, secretKey);
+            byte[] decodedData = Base64.getDecoder().decode(encryptedData);
+            byte[] decryptedData = cipher.doFinal(decodedData);
+            return new String(decryptedData);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+}
+
+// Signature utility class to handle digital signing
+class SignatureUtil {
+
+    // Simulate signing the encrypted email message with a private key
+    public static String signMessage(String encryptedMessage) {
+        try {
+            // Create a key pair for signing (RSA algorithm used here for demonstration)
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+            keyPairGenerator.initialize(2048); // 2048-bit RSA key
+            KeyPair keyPair = keyPairGenerator.generateKeyPair();
+
+            // Get the private key for signing
+            PrivateKey privateKey = keyPair.getPrivate();
+
+            // Create a signature instance
+            Signature signature = Signature.getInstance("SHA256withRSA");
+            signature.initSign(privateKey);
+            signature.update(encryptedMessage.getBytes());
+
+            // Generate the signature
+            byte[] signedData = signature.sign();
+
+            // Return the signed message as a Base64 encoded string
+            return Base64.getEncoder().encodeToString(signedData);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // Verify the digital signature using the public key
+    public static boolean verifySignature(String signedMessage, String encryptedMessage) {
+        try {
+            // Assume we have the public key to verify the signature (simulated here)
+            PublicKey publicKey = getPublicKey();
+
+            // Create a signature instance
+            Signature signature = Signature.getInstance("SHA256withRSA");
+            signature.initVerify(publicKey);
+            signature.update(encryptedMessage.getBytes());
+
+            // Decode the signed message from Base64 and verify
+            byte[] decodedSignedMessage = Base64.getDecoder().decode(signedMessage);
+            return signature.verify(decodedSignedMessage);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Simulate retrieving the public key (in reality, you would retrieve it from a trusted source)
+    private static PublicKey getPublicKey() throws Exception {
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        keyPairGenerator.initialize(2048); // 2048-bit RSA key
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+        return keyPair.getPublic();
+    }
+}
+
+// A utility class to handle custom exceptions during email processing
+class EmailException extends Exception {
+    public EmailException(String message) {
+        super(message);
+    }
+}
