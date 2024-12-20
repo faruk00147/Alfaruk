@@ -1,0 +1,55 @@
+public class MatrixMultiplication {
+
+    // Method to multiply two matrices
+    public static int[][] multiplyMatrices(int[][] A, int[][] B) {
+        // Number of rows in matrix A and number of columns in matrix B
+        int m = A.length;      // Rows in A
+        int n = A[0].length;   // Columns in A (which is the same as rows in B)
+        int p = B[0].length;   // Columns in B
+
+        // Initialize the result matrix C with dimensions m x p
+        int[][] C = new int[m][p];
+
+        // Perform matrix multiplication
+        for (int i = 0; i < m; i++) {  // Iterate over rows of A
+            for (int j = 0; j < p; j++) {  // Iterate over columns of B
+                C[i][j] = 0;  // Initialize the element of result matrix
+                for (int k = 0; k < n; k++) {  // Iterate over columns of A and rows of B
+                    C[i][j] += A[i][k] * B[k][j];  // Multiply and sum
+                }
+            }
+        }
+        return C;  // Return the resultant matrix
+    }
+
+    // Method to print a matrix
+    public static void printMatrix(int[][] matrix) {
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                System.out.print(matrix[i][j] + "\t");  // Print each element with tab space
+            }
+            System.out.println();  // Move to the next line after each row
+        }
+    }
+
+    public static void main(String[] args) {
+        // Example matrices A (2x3) and B (3x2)
+        int[][] A = {
+            {1, 2, 3},
+            {4, 5, 6}
+        };
+
+        int[][] B = {
+            {7, 8},
+            {9, 10},
+            {11, 12}
+        };
+
+        // Multiply matrices A and B
+        int[][] result = multiplyMatrices(A, B);
+
+        // Print the result matrix
+        System.out.println("Result of A x B:");
+        printMatrix(result);
+    }
+}
