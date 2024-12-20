@@ -1,0 +1,122 @@
+public class LogicalShiftRightExample {
+    public static void main(String[] args) {
+        // Example numbers to demonstrate the Logical Shift Right operation
+        int[] numbers = {16, -16, 32, -32, 255, -255, 1024, -1024};
+        
+        // Shift amount
+        int shiftAmount = 3;
+
+        // Printing the header for clarity
+        System.out.println("Performing Logical Shift Right (>>>):");
+        System.out.println("------------------------------------------------");
+
+        // Iterate through each number and demonstrate the shift
+        for (int number : numbers) {
+            System.out.println("Original number: " + number);
+            System.out.println("Binary representation of " + number + ": " + Integer.toBinaryString(number));
+
+            // Perform Logical Shift Right and display the result
+            int result = number >>> shiftAmount;
+            System.out.println("After shifting " + number + " right by " + shiftAmount + " positions:");
+            System.out.println("Result: " + result);
+            System.out.println("Binary representation of result: " + Integer.toBinaryString(result));
+            System.out.println("------------------------------------------------");
+        }
+
+        // Demonstrating various shift amounts
+        System.out.println("Demonstrating different shift amounts for the number 32:");
+        for (int i = 0; i <= 5; i++) {
+            int shifted = 32 >>> i;
+            System.out.println("Shift by " + i + " positions:");
+            System.out.println("Original number: 32");
+            System.out.println("Binary representation: " + Integer.toBinaryString(32));
+            System.out.println("Result: " + shifted);
+            System.out.println("Binary representation of result: " + Integer.toBinaryString(shifted));
+            System.out.println("------------------------------------------------");
+        }
+
+        // Experiment with larger shift amounts
+        System.out.println("Experimenting with larger shift amounts:");
+        int largeNumber = 2147483647; // Max positive value for a 32-bit signed integer
+        System.out.println("Original number: " + largeNumber);
+        System.out.println("Binary representation: " + Integer.toBinaryString(largeNumber));
+
+        for (int i = 10; i <= 30; i += 5) {
+            int shiftedLarge = largeNumber >>> i;
+            System.out.println("Shift by " + i + " positions:");
+            System.out.println("Result: " + shiftedLarge);
+            System.out.println("Binary representation of result: " + Integer.toBinaryString(shiftedLarge));
+            System.out.println("------------------------------------------------");
+        }
+
+        // Demonstrating shifting negative numbers
+        int negativeNumber = -2147483648; // Min value for a 32-bit signed integer
+        System.out.println("Shifting negative number: " + negativeNumber);
+        System.out.println("Binary representation of negative number: " + Integer.toBinaryString(negativeNumber));
+        
+        for (int i = 0; i <= 5; i++) {
+            int shiftedNegative = negativeNumber >>> i;
+            System.out.println("Shift by " + i + " positions:");
+            System.out.println("Result: " + shiftedNegative);
+            System.out.println("Binary representation of result: " + Integer.toBinaryString(shiftedNegative));
+            System.out.println("------------------------------------------------");
+        }
+
+        // Demonstrating logical shift on very large numbers
+        long largeLong = 9223372036854775807L; // Max positive value for a 64-bit signed long
+        System.out.println("Shifting large long value: " + largeLong);
+        System.out.println("Binary representation of large long value: " + Long.toBinaryString(largeLong));
+
+        for (int i = 10; i <= 60; i += 10) {
+            long shiftedLargeLong = largeLong >>> i;
+            System.out.println("Shift by " + i + " positions:");
+            System.out.println("Result: " + shiftedLargeLong);
+            System.out.println("Binary representation of result: " + Long.toBinaryString(shiftedLargeLong));
+            System.out.println("------------------------------------------------");
+        }
+
+        // Shifting 0
+        int zero = 0;
+        System.out.println("Shifting zero (0): " + zero);
+        System.out.println("Binary representation of 0: " + Integer.toBinaryString(zero));
+        int shiftedZero = zero >>> 3;
+        System.out.println("After shifting zero by 3 positions: " + shiftedZero);
+        System.out.println("Binary representation of result: " + Integer.toBinaryString(shiftedZero));
+
+        // Shifting the maximum and minimum possible int values
+        System.out.println("Shifting max int value:");
+        int maxInt = Integer.MAX_VALUE;
+        System.out.println("Original number (max int): " + maxInt);
+        System.out.println("Binary representation: " + Integer.toBinaryString(maxInt));
+        int shiftedMaxInt = maxInt >>> 5;
+        System.out.println("Shifted by 5: " + shiftedMaxInt);
+        System.out.println("Binary representation of result: " + Integer.toBinaryString(shiftedMaxInt));
+
+        System.out.println("Shifting min int value:");
+        int minInt = Integer.MIN_VALUE;
+        System.out.println("Original number (min int): " + minInt);
+        System.out.println("Binary representation: " + Integer.toBinaryString(minInt));
+        int shiftedMinInt = minInt >>> 5;
+        System.out.println("Shifted by 5: " + shiftedMinInt);
+        System.out.println("Binary representation of result: " + Integer.toBinaryString(shiftedMinInt));
+
+        // Demonstrating how logical right shift behaves on the most significant bit (MSB)
+        System.out.println("Logical shift right on MSB example:");
+        int msbExample = -1; // -1 in binary is all 1s
+        System.out.println("Original number (-1): " + msbExample);
+        System.out.println("Binary representation of -1: " + Integer.toBinaryString(msbExample));
+        int shiftedMsb = msbExample >>> 5;
+        System.out.println("Shifted by 5: " + shiftedMsb);
+        System.out.println("Binary representation of result: " + Integer.toBinaryString(shiftedMsb));
+        System.out.println("------------------------------------------------");
+
+        // Final summary
+        System.out.println("Summary of Logical Shift Right operation:");
+        System.out.println("1. The '>>>' operator in Java performs a logical shift right.");
+        System.out.println("2. It fills the leftmost bits with zeros, making it suitable for unsigned operations.");
+        System.out.println("3. The behavior of this operator is different from the arithmetic right shift (>>), which preserves the sign bit for signed integers.");
+        System.out.println("4. It can be useful in scenarios where we need to manipulate bits directly, such as in encryption or compression algorithms.");
+        System.out.println("5. The operation does not change the sign of the number but shifts bits and sets the leftmost bits to 0.");
+
+    }
+}
